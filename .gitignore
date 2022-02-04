@@ -16,7 +16,7 @@ yarn-error.log
 /.vscode
 
 # Docker Volumes
-/docker/*
+/docker/mysql/*
 
-# Keep all files named as .gitkeep
-!*.gitkeep
+# Log Files
+*.log
