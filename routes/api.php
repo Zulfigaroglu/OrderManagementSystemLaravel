@@ -23,5 +23,11 @@ Route::group([
         'middleware' => 'auth:api'
     ], function () {
         Route::get('logout', 'AuthController@logout')->name('logout');
+
+        Route::resource('categories', 'CategoryController')->only(['index', 'show'])->names('category');
+        Route::resource('products', 'ProductController')->only(['index', 'show'])->names('product');
+        Route::resource('customers', 'CustomerController')->only(['index', 'show'])->names('customer');
+        Route::resource('orders', 'OrderController')->names('order');
+        Route::resource('discounts', 'DiscountController')->names('discount');
     });
 });

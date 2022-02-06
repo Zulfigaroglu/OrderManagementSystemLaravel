@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use InvalidArgumentException;
+use Symfony\Component\Console\Input\InputOption;
 
 class ServiceMakeCommand extends GeneratorCommand
 {
@@ -37,7 +39,47 @@ class ServiceMakeCommand extends GeneratorCommand
     {
         $stub = parent::buildClass($name);
 
-        return $stub;
+        $model = $this->option('model');
+
+        return $model ? $this->replaceModel($stub, $model) : $stub;
+    }
+
+    /**
+     * Replace the model for the given stub.
+     *
+     * @param string $stub
+     * @param string $model
+     * @return string
+     */
+    protected function replaceModel($stub, $model)
+    {
+        $modelClass = $this->parseModel($model);
+
+        $replace = [
+            '{{ model }}' => class_basename($modelClass),
+            '{{ modelVariable }}' => lcfirst(class_basename($modelClass)),
+        ];
+
+        return str_replace(
+            array_keys($replace), array_values($replace), $stub
+        );
+    }
+
+    /**
+     * Get the fully-qualified model class name.
+     *
+     * @param string $model
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function parseModel($model)
+    {
+        if (preg_match('([^A-Za-z0-9_/\\\\])', $model)) {
+            throw new InvalidArgumentException('Model name contains invalid characters.');
+        }
+
+        return $this->qualifyModel($model);
     }
 
     /**
@@ -47,7 +89,9 @@ class ServiceMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return $this->resolveStubPath('/stubs/service.stub');
+        return $this->option('model')
+            ? $this->resolveStubPath('/stubs/service.stub')
+            : $this->resolveStubPath('/stubs/service.plain.stub');
     }
 
     /**
@@ -72,5 +116,17 @@ class ServiceMakeCommand extends GeneratorCommand
     protected function getDefaultNamespace($rootNamespace)
     {
         return $rootNamespace . '\Services';
+    }
+
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return [
+            ['model', 'm', InputOption::VALUE_OPTIONAL, 'The model that the service applies to.'],
+        ];
     }
 }

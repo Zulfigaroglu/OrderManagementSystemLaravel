@@ -10,26 +10,16 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthService
 {
-    /**
-     * @param array $data
-     * @return JsonResponse
-     */
-    public function register(array $data)
+    public function register(array $data): JsonResponse
     {
-        $user = new User();
-        $user->name = $data['name'];
-        $user->email = $data['email'];
-        $user->password = bcrypt($data['password']);
+        $data['password'] = bcrypt($data['password']);
+        $user = User::create($data);
         $user->save();
 
         return response()->json($user, 201);
     }
 
-    /**
-     * @param array $data
-     * @return JsonResponse
-     */
-    public function login(array $data)
+    public function login(array $data): JsonResponse
     {
         $credentials = Arr::only($data, ['email', 'password']);
         if (!Auth::attempt($credentials))
@@ -53,7 +43,7 @@ class AuthService
         ]);
     }
 
-    public function logout($user)
+    public function logout($user): JsonResponse
     {
         $user->token()->revoke();
         return response()->json(['message' => 'Successfully logged out']);

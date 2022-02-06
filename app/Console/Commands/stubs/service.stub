@@ -2,10 +2,37 @@
 
 namespace {{ namespace }};
 
-class {{ class }}
-{
-    public function __construct(){
+use App\Services\Infrastructure\IModelService;
+use App\Models\{{ model }};
+use Illuminate\Support\Collection;
 
+class {{ class }} implements IModelService
+{
+    public function getAll(): Collection
+    {
+        return {{ model }}::all();
     }
 
+    public function getById(int $id): {{ model }}
+    {
+        return {{ model }}::findOrFail($id);
+    }
+
+    public function create(array $data): {{ model }}
+    {
+        return {{ model }}::create($data);
+    }
+
+    public function update(int $id, array $data): {{ model }}
+    {
+        ${{ modelVariable }} = $this->getById($id);
+        ${{ modelVariable }}->update($data);
+        return ${{ modelVariable }}->refresh();
+    }
+
+    public function delete(int $id): bool
+    {
+        ${{ modelVariable }} = $this->getById($id);
+        return ${{ modelVariable }}->delete();
+    }
 }
