@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DiscountCreateRequest;
 use App\Http\Requests\DiscountUpdateRequest;
 use App\Models\Discount;
+use App\Services\DiscountService;
 use App\Services\Infrastructure\IModelService;
 use Illuminate\Http\JsonResponse;
 
@@ -37,10 +38,6 @@ class DiscountController extends Controller
     public function store(DiscountCreateRequest $request): JsonResponse
     {
         $data = $request->all();
-
-        /**
-         * @var Discount $discount
-         */
         $discount = $this->discountService->create($data);
         return response()->json($discount);
     }
@@ -53,9 +50,6 @@ class DiscountController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        /**
-         * @var Discount $discount
-         */
         $discount = $this->discountService->getById($id);
         return response()->json($discount);
     }
@@ -70,10 +64,6 @@ class DiscountController extends Controller
     public function update(DiscountUpdateRequest $request, int $id): JsonResponse
     {
         $data = $request->all();
-
-        /**
-         * @var Discount $discount
-         */
         $discount = $this->discountService->update($id, $data);
         return response()->json($discount);
     }
@@ -91,5 +81,19 @@ class DiscountController extends Controller
             return response()->json(['message' => 'Discount is successfully deleted.']);
         }
         return response()->json(['message' => 'Discount couldn\'t be deleted.'], 500);
+    }
+
+    /**
+     * Apply discounts to given order
+     *
+     * @param int $orderId
+     * @return JsonResponse
+     */
+    public function apply(int $orderId): JsonResponse
+    {
+        if($this->discountService instanceof DiscountService){
+            $orderDiscountDto = $this->discountService->apply($orderId);
+        }
+        return response()->json($orderDiscountDto);
     }
 }

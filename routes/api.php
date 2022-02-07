@@ -29,5 +29,7 @@ Route::group([
         Route::resource('customers', 'CustomerController')->only(['index', 'show'])->names('customer');
         Route::resource('orders', 'OrderController')->names('order');
         Route::resource('discounts', 'DiscountController')->names('discount');
+
+        Route::get('orders/{order}/discounts', 'DiscountController@apply')->name('discount.apply');
     });
 });

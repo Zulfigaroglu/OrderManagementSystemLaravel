@@ -19,12 +19,12 @@ class Discount extends Model
     protected $fillable = [
         'name',
         'category_id',
-        'discount_condition_subject',
-        'discount_condition_type',
-        'discount_condition_value',
-        'discount_policy_subject',
-        'discount_policy_type',
-        'discount_policy_value',
+        'condition_subject',
+        'condition_type',
+        'condition_value',
+        'policy_subject',
+        'policy_type',
+        'policy_value',
     ];
 
     /**
