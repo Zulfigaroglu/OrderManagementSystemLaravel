@@ -12,6 +12,6 @@
 
 ``docker exec -it oms-app php artisan migrate``
 
-3. Run database seeders
+4. Run database seeders
 
 ``docker exec -it oms-app php artisan db:seed``
