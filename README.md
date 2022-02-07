@@ -2,7 +2,7 @@
 
 1. Run Docker
 
-`` docker-compose up``
+`` docker-compose up -d``
 
 2. Install dependencies
 
